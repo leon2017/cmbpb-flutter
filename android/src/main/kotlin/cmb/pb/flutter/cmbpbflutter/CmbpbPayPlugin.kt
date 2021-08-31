@@ -60,11 +60,38 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-        if (call.method == CmpPbConstant.METHOD_REGISTER_APP) {
-            registerApp(call, result)
-        } else {
-            result.notImplemented()
+        when (call.method) {
+            CmpPbConstant.METHOD_REGISTER_APP -> {
+                registerApp(call, result)
+            }
+            CmpPbConstant.METHOD_PAY_REQUEST -> {
+                requestPay(call, result)
+            }
+            else -> {
+                result.notImplemented()
+            }
         }
+    }
+
+
+    /**
+     * start pay
+     */
+    private fun requestPay(call: MethodCall, result: Result) {
+        val requestData = call.argument<String>(CmpPbConstant.ARGUMENT_REQUEST_DATA)
+        val jumpAppUrl = call.argument<String>(CmpPbConstant.ARGUMENT_REQUEST_JUMP_APP_URL)
+        val h5Url = call.argument<String>(CmpPbConstant.ARGUMENT_REQUEST_H5_URL)
+        val method = call.argument<String>(CmpPbConstant.ARGUMENT_REQUEST_METHOD)
+        val isShowBar = call.argument<Boolean>(CmpPbConstant.ARGUMENT_REQUEST_SHOW_BAR) ?: true
+        result.success(null)
+
+        val request = CMBRequest()
+        request.requestData = requestData
+        request.CMBJumpAppUrl = jumpAppUrl
+        request.CMBH5Url = h5Url
+        request.method = method
+        request.isShowNavigationBar = isShowBar
+        cmbApi?.sendReq(request)
     }
 
     /**
