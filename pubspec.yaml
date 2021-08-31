@@ -28,7 +28,7 @@ flutter:
     platforms:
       android:
         package: cmb.pb.flutter.cmbpbflutter
-        pluginClass: CmbpbflutterPlugin
+        pluginClass: CmbpbPayPlugin
       ios:
         pluginClass: CmbpbflutterPlugin
 

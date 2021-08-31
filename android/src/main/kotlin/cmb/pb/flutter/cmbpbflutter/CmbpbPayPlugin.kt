@@ -12,13 +12,16 @@ import io.flutter.plugin.common.MethodChannel.Result
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import cmbapi.CMBApi
-import cmbapi.CMBApiFactory
+import android.util.Log
+import android.widget.Toast
+import cmbapi.*
+import io.flutter.BuildConfig
 import io.flutter.plugin.common.PluginRegistry
 
 
 /** CmbpbflutterPlugin */
-class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentListener, MethodCallHandler {
+class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentListener,
+    MethodCallHandler {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -26,7 +29,7 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
     private var channel: MethodChannel? = null
     private var applicationContext: Context? = null
     private var activity: Activity? = null
-    var cmbApi: CMBApi?= null
+    var cmbApi: CMBApi? = null
 
     override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(binding.binaryMessenger, "cmbpbflutter")
@@ -57,21 +60,52 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-        if (call.method == "getPlatformVersion") {
-            result.success("Android ${android.os.Build.VERSION.RELEASE}")
-            cmbApi = CMBApiFactory.createCMBAPI(activity, "")
+        if (call.method == CmpPbConstant.METHOD_REGISTER_APP) {
+            registerApp(call, result)
         } else {
             result.notImplemented()
         }
     }
 
+    /**
+     * 一网通 init
+     */
+    private fun registerApp(call: MethodCall, result: Result) {
+        val appId = call.argument<String>(CmpPbConstant.ARGUMENT_KEY_APP_ID)
+        cmbApi = CMBApiFactory.createCMBAPI(activity, appId)
+        Log.d(CMBConstants.TAG, "registerApp AppId:$appId")
+        result.success(null)
+    }
+
     override fun onNewIntent(intent: Intent?): Boolean {
         val resp = intent?.extraCallback()
-        if (resp!=null){
-            //TODO 招行支付回调
+        if (resp != null) {
+            cmbApi?.handleIntent(resp, eventHandler)
             return true
         }
         return false
     }
+
+
+    private val eventHandler = CMBEventHandler { response ->
+        Log.d(CMBConstants.TAG, "MainActivity-onResp 进入:")
+        if (response.respCode == 0) {
+            Log.d(
+                CMBConstants.TAG,
+                "MainActivity-onResp responseMSG:" + response.respMsg + "responseCODE= " + response.respCode
+            );
+            Toast.makeText(activity, "调用成功.str:" + response.respMsg, Toast.LENGTH_SHORT).show();
+        } else {
+            Log.d(CMBConstants.TAG, "MainActivity-onResp 调用失败:");
+            Toast.makeText(activity, "调用失败", Toast.LENGTH_SHORT).show();
+        }
+        val resMsg = "onResp：respcode:${response.respCode}.respmsg:${response.respMsg}"
+        Log.d(CMBConstants.TAG, resMsg)
+        val tempMap = mutableMapOf<String, Any>()
+        tempMap[CmpPbConstant.ARGUMENT_PAY_RESPONSE_CODE] = response.respCode
+        tempMap[CmpPbConstant.ARGUMENT_PAY_RESPONSE_MSG] = response.respMsg
+        channel?.invokeMethod(CmpPbConstant.METHOD_PAY_RESPONSE, tempMap)
+    }
+
 
 }

@@ -52,6 +52,12 @@ android {
             resValue "string", "hello", "hello"
         }
     }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
 }
 
 flutter {
@@ -60,4 +66,5 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation(name: 'cmbsdk-release-1.1.0', ext: 'aar')
 }
