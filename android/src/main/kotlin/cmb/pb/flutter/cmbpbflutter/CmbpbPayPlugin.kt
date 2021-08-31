@@ -12,6 +12,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import cmbapi.*
@@ -83,15 +84,93 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
         val h5Url = call.argument<String>(CmpPbConstant.ARGUMENT_REQUEST_H5_URL)
         val method = call.argument<String>(CmpPbConstant.ARGUMENT_REQUEST_METHOD)
         val isShowBar = call.argument<Boolean>(CmpPbConstant.ARGUMENT_REQUEST_SHOW_BAR) ?: true
+        val request = createCmbRequest(requestData, jumpAppUrl, h5Url, method, isShowBar)
+        val cmbAppInstalled = cmbApi?.isCMBAppInstalled ?: false
+        if (cmbAppInstalled) { //招行App已经安装 跳转app支付
+            if (jumpApp(jumpAppUrl, result, request)) return
+        } else { // 还没有安装招行App,打开H5支付页面
+            if (jumpWebViewActivity(h5Url, result, request)) return
+        }
+        cmbApi?.sendReq(request)
         result.success(null)
+    }
 
+    /**
+     * 还没有安装招行App,打开H5支付页面
+     */
+    private fun jumpWebViewActivity(
+        h5Url: String?,
+        result: Result,
+        request: CMBRequest
+    ): Boolean {
+        if (TextUtils.isEmpty(h5Url)) {
+            result.error(
+                "${PayResult.REQUEST_H5_URL_EMPTY.code}",
+                PayResult.REQUEST_H5_URL_EMPTY.message,
+                PayResult.REQUEST_H5_URL_EMPTY.detail
+            )
+            return true
+        }
+        request.CMBJumpAppUrl = ""
+        try {
+            cmbApi?.sendReq(request)
+        } catch (e: IllegalArgumentException) {
+            result.error(
+                "${PayResult.REQUEST_PARAMS_ERROR.code}",
+                PayResult.REQUEST_PARAMS_ERROR.message,
+                e.toString()
+            )
+        }
+        return false
+    }
+
+    /**
+     * 招行App已经安装 跳转app支付
+     */
+    private fun jumpApp(
+        jumpAppUrl: String?,
+        result: Result,
+        request: CMBRequest
+    ): Boolean {
+        if (TextUtils.isEmpty(jumpAppUrl)) {
+            result.error(
+                "${PayResult.REQUEST_JUMP_APP_URL_EMPTY.code}",
+                PayResult.REQUEST_JUMP_APP_URL_EMPTY.message,
+                PayResult.REQUEST_JUMP_APP_URL_EMPTY.detail
+            )
+            return true
+        }
+        request.CMBH5Url = ""
+        try {
+            cmbApi?.sendReq(request)
+        } catch (e: IllegalArgumentException) {
+            result.error(
+                "${PayResult.REQUEST_PARAMS_ERROR.code}",
+                PayResult.REQUEST_PARAMS_ERROR.message,
+                e.toString()
+            )
+        }
+        return false
+    }
+
+
+    /**
+     * new CMBRequest
+     */
+    private fun createCmbRequest(
+        requestData: String?,
+        jumpAppUrl: String?,
+        h5Url: String?,
+        method: String?,
+        isShowBar: Boolean
+    ): CMBRequest {
         val request = CMBRequest()
         request.requestData = requestData
         request.CMBJumpAppUrl = jumpAppUrl
         request.CMBH5Url = h5Url
         request.method = method
         request.isShowNavigationBar = isShowBar
-        cmbApi?.sendReq(request)
+        return request
     }
 
     /**
