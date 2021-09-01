@@ -13,7 +13,6 @@ class CmbPbPayCallbackActivity : AppCompatActivity(){
         const val KEY_CMBPB_RESP = "cmbpb_resp"
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handleIntent(intent)
@@ -25,13 +24,8 @@ class CmbPbPayCallbackActivity : AppCompatActivity(){
         handleIntent(intent)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.d(CMBConstants.TAG, "MainActivity-onActivityResult data:" +data?.dataString)
-        handleIntent(data)
-    }
-
     private fun handleIntent(intent: Intent?) {
+        Log.d(CMBConstants.TAG, "CmbPbPayCallbackActivity handleIntent" +intent?.dataString)
         val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
         launchIntent?.apply {
             putExtra(KEY_CMBPB_CALLBACK,true)

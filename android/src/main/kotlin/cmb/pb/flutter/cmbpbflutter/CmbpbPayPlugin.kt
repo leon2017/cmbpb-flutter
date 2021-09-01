@@ -22,6 +22,7 @@ import io.flutter.plugin.common.PluginRegistry
 
 /** CmbpbflutterPlugin */
 class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentListener,
+    PluginRegistry.ActivityResultListener,
     MethodCallHandler {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
@@ -30,6 +31,7 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
     private var channel: MethodChannel? = null
     private var applicationContext: Context? = null
     private var activity: Activity? = null
+    private var activityPluginBinding: ActivityPluginBinding? = null
     var cmbApi: CMBApi? = null
 
     override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -45,7 +47,9 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        activityPluginBinding = binding
         activity = binding.activity
+        binding.addActivityResultListener(this)
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
@@ -58,6 +62,8 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
 
     override fun onDetachedFromActivity() {
         activity = null
+        activityPluginBinding?.removeActivityResultListener(this)
+        activityPluginBinding = null
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
@@ -85,74 +91,25 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
         val method = call.argument<String>(CmpPbConstant.ARGUMENT_REQUEST_METHOD)
         val isShowBar = call.argument<Boolean>(CmpPbConstant.ARGUMENT_REQUEST_SHOW_BAR) ?: true
         val request = createCmbRequest(requestData, jumpAppUrl, h5Url, method, isShowBar)
-        val cmbAppInstalled = cmbApi?.isCMBAppInstalled ?: false
-        if (cmbAppInstalled) { //招行App已经安装 跳转app支付
-            if (jumpApp(jumpAppUrl, result, request)) return
-        } else { // 还没有安装招行App,打开H5支付页面
-            if (jumpWebViewActivity(h5Url, result, request)) return
-        }
-        cmbApi?.sendReq(request)
-        result.success(null)
-    }
-
-    /**
-     * 还没有安装招行App,打开H5支付页面
-     */
-    private fun jumpWebViewActivity(
-        h5Url: String?,
-        result: Result,
-        request: CMBRequest
-    ): Boolean {
         if (TextUtils.isEmpty(h5Url)) {
             result.error(
                 "${PayResult.REQUEST_H5_URL_EMPTY.code}",
                 PayResult.REQUEST_H5_URL_EMPTY.message,
                 PayResult.REQUEST_H5_URL_EMPTY.detail
             )
-            return true
+            return
         }
-        request.CMBJumpAppUrl = ""
-        try {
-            cmbApi?.sendReq(request)
-        } catch (e: IllegalArgumentException) {
-            result.error(
-                "${PayResult.REQUEST_PARAMS_ERROR.code}",
-                PayResult.REQUEST_PARAMS_ERROR.message,
-                e.toString()
-            )
-        }
-        return false
-    }
-
-    /**
-     * 招行App已经安装 跳转app支付
-     */
-    private fun jumpApp(
-        jumpAppUrl: String?,
-        result: Result,
-        request: CMBRequest
-    ): Boolean {
         if (TextUtils.isEmpty(jumpAppUrl)) {
             result.error(
                 "${PayResult.REQUEST_JUMP_APP_URL_EMPTY.code}",
                 PayResult.REQUEST_JUMP_APP_URL_EMPTY.message,
                 PayResult.REQUEST_JUMP_APP_URL_EMPTY.detail
             )
-            return true
+            return
         }
-        request.CMBH5Url = ""
-        try {
-            cmbApi?.sendReq(request)
-        } catch (e: IllegalArgumentException) {
-            result.error(
-                "${PayResult.REQUEST_PARAMS_ERROR.code}",
-                PayResult.REQUEST_PARAMS_ERROR.message,
-                e.toString()
-            )
-        }
-        return false
+        cmbApi?.sendReq(request)
+        result.success(null)
     }
-
 
     /**
      * new CMBRequest
@@ -186,7 +143,7 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
     override fun onNewIntent(intent: Intent?): Boolean {
         val resp = intent?.extraCallback()
         if (resp != null) {
-            cmbApi?.handleIntent(resp, eventHandler)
+            handleIntent(resp)
             return true
         }
         return false
@@ -211,6 +168,19 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
         tempMap[CmpPbConstant.ARGUMENT_PAY_RESPONSE_CODE] = response.respCode
         tempMap[CmpPbConstant.ARGUMENT_PAY_RESPONSE_MSG] = response.respMsg
         channel?.invokeMethod(CmpPbConstant.METHOD_PAY_RESPONSE, tempMap)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        Log.d(CMBConstants.TAG, "CmbPbPayCallbackActivity handleIntent2" +data?.dataString)
+        if (requestCode == 3 && resultCode == 2){
+            handleIntent(data)
+            return true
+        }
+        return false
+    }
+
+    private fun handleIntent(resp: Intent?) {
+        cmbApi?.handleIntent(resp, eventHandler)
     }
 
 
