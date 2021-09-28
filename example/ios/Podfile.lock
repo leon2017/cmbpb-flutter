@@ -1,0 +1,22 @@
+PODS:
+  - cmbpbflutter (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - cmbpbflutter (from `.symlinks/plugins/cmbpbflutter/ios`)
+  - Flutter (from `Flutter`)
+
+EXTERNAL SOURCES:
+  cmbpbflutter:
+    :path: ".symlinks/plugins/cmbpbflutter/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  cmbpbflutter: 88bd394576485b079a111861959d0b30a637f419
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.10.1
