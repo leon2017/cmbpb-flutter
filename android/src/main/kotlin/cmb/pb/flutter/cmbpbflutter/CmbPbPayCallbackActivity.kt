@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import cmbapi.CMBConstants
 
-class CmbPbPayCallbackActivity : AppCompatActivity(){
+class CmbPbPayCallbackActivity : AppCompatActivity() {
 
     companion object {
         const val KEY_CMBPB_CALLBACK = "cmbpb_callback"
@@ -25,10 +25,10 @@ class CmbPbPayCallbackActivity : AppCompatActivity(){
     }
 
     private fun handleIntent(intent: Intent?) {
-        Log.d(CMBConstants.TAG, "CmbPbPayCallbackActivity handleIntent" +intent?.dataString)
+        Log.d(CMBConstants.TAG, "CmbPbPayCallbackActivity handleIntent" + intent?.dataString)
         val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
         launchIntent?.apply {
-            putExtra(KEY_CMBPB_CALLBACK,true)
+            putExtra(KEY_CMBPB_CALLBACK, true)
             putExtra(KEY_CMBPB_RESP, intent)
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(launchIntent)
@@ -38,7 +38,7 @@ class CmbPbPayCallbackActivity : AppCompatActivity(){
 }
 
 fun Intent.extraCallback(): Intent? {
-    if (extras!=null && getBooleanExtra(CmbPbPayCallbackActivity.KEY_CMBPB_CALLBACK,false)) {
+    if (extras != null && getBooleanExtra(CmbPbPayCallbackActivity.KEY_CMBPB_CALLBACK, false)) {
         return getParcelableExtra(CmbPbPayCallbackActivity.KEY_CMBPB_RESP)
     }
     return null

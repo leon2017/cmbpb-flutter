@@ -12,6 +12,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
@@ -20,7 +21,10 @@ import io.flutter.BuildConfig
 import io.flutter.plugin.common.PluginRegistry
 
 
-/** CmbpbflutterPlugin */
+/**
+ * 招行一网通支付 核心功能部分
+ *
+ * */
 class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentListener,
     PluginRegistry.ActivityResultListener,
     MethodCallHandler {
@@ -50,6 +54,7 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
         activityPluginBinding = binding
         activity = binding.activity
         binding.addActivityResultListener(this)
+        binding.addOnNewIntentListener(this)
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
@@ -108,7 +113,6 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
             return
         }
         cmbApi?.sendReq(request)
-        result.success(null)
     }
 
     /**
@@ -141,6 +145,8 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
     }
 
     override fun onNewIntent(intent: Intent?): Boolean {
+        Log.d(CMBConstants.TAG, "onNewIntent 执行:")
+        Log.d(CMBConstants.TAG, intent?.dataString?.toString()?:"")
         val resp = intent?.extraCallback()
         if (resp != null) {
             handleIntent(resp)
@@ -182,6 +188,4 @@ class CmbpbPayPlugin : FlutterPlugin, ActivityAware, PluginRegistry.NewIntentLis
     private fun handleIntent(resp: Intent?) {
         cmbApi?.handleIntent(resp, eventHandler)
     }
-
-
 }

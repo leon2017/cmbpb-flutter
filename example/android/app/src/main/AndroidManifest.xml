@@ -5,7 +5,7 @@
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
@@ -43,6 +43,7 @@
            android:label="@string/app_name"
            android:exported="true"
            android:theme="@style/CmbPbPay.Theme.Transparent"
+           android:taskAffinity="${applicationId}"
            android:launchMode="singleTop">
 
            <intent-filter>
@@ -51,5 +52,6 @@
                <data android:scheme="simplesdk"/>
            </intent-filter>
        </activity>
+
     </application>
 </manifest>
