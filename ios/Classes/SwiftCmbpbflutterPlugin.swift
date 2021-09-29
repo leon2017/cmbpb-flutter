@@ -18,6 +18,26 @@ public class SwiftCmbpbflutterPlugin: NSObject, FlutterPlugin {
     }
     
     
+    public func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
+        let cmbDelegate = CMBApiDelegateImpl.shared
+        CMBApi.handleOpen(url, delegate: cmbDelegate)
+        return true
+    }
+    
+    public func application(_ application: UIApplication, open url: URL,
+                            sourceApplication: String, annotation: Any) -> Bool {
+        let cmbDelegate = CMBApiDelegateImpl.shared
+        CMBApi.handleOpen(url, delegate: cmbDelegate)
+        return true
+    }
+    
+    public func application(_ application: UIApplication, open url: URL,
+                            options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        let cmbDelegate = CMBApiDelegateImpl.shared
+        CMBApi.handleOpen(url, delegate: cmbDelegate)
+        return true
+    }
+        
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         let _method =  call.method
         switch _method {
