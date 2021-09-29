@@ -1,7 +1,7 @@
 import Flutter
 import UIKit
 
-public class SwiftCmbpbflutterPlugin: NSObject, FlutterPlugin {
+public class SwiftCmbpbflutterPlugin: NSObject, FlutterPlugin, CMBApiDelegate {
     
     var appId: String?
     
@@ -19,23 +19,17 @@ public class SwiftCmbpbflutterPlugin: NSObject, FlutterPlugin {
     
     
     public func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
-        let cmbDelegate = CMBApiDelegateImpl.shared
-        CMBApi.handleOpen(url, delegate: cmbDelegate)
-        return true
+        return CMBApi.handleOpen(url, delegate: self)
     }
     
     public func application(_ application: UIApplication, open url: URL,
                             sourceApplication: String, annotation: Any) -> Bool {
-        let cmbDelegate = CMBApiDelegateImpl.shared
-        CMBApi.handleOpen(url, delegate: cmbDelegate)
-        return true
+        return CMBApi.handleOpen(url, delegate: self)
     }
     
     public func application(_ application: UIApplication, open url: URL,
                             options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        let cmbDelegate = CMBApiDelegateImpl.shared
-        CMBApi.handleOpen(url, delegate: cmbDelegate)
-        return true
+        return CMBApi.handleOpen(url, delegate: self)
     }
         
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -78,13 +72,17 @@ public class SwiftCmbpbflutterPlugin: NSObject, FlutterPlugin {
         
         let tempAppId = appId ?? ""
         let rootViewController:UIViewController! = UIApplication.shared.keyWindow?.rootViewController
-        let cmbDelegate = CMBApiDelegateImpl.shared
-        cmbDelegate.respCallback { (code, msg) in
-            NSLog("requestPay支付结果==> code: %d, msg: %s",code,msg)
+        CMBApi.send(reqObj, appid: tempAppId, viewController: rootViewController, delegate: self )
+    }
+    
+    public func onResp(_ resp: CMBResponse!) {
+        DispatchQueue.main.async {
+            let msg = resp?.respMessage ?? "未知错误"
+            let code = resp?.respCode ?? -1000
+            NSLog("requestPay支付结果2333==> code: %d, msg: %s", code, msg)
             let map: [String: Any] =
                 [CmpPbConstant.ARGUMENT_PAY_RESPONSE_CODE: code, CmpPbConstant.ARGUMENT_PAY_RESPONSE_MSG: msg]
             self._channel?.invokeMethod(CmpPbConstant.METHOD_PAY_RESPONSE, arguments: map)
         }
-        CMBApi.send(reqObj, appid: tempAppId, viewController: rootViewController, delegate: cmbDelegate )
     }
 }
