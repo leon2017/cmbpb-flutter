@@ -14,6 +14,7 @@ public class SwiftCmbpbflutterPlugin: NSObject, FlutterPlugin, CMBApiDelegate {
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "cmbpbflutter", binaryMessenger: registrar.messenger())
         let instance = SwiftCmbpbflutterPlugin(channel: channel)
+        registrar.addApplicationDelegate(instance)
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     
