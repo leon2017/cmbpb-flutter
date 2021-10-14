@@ -1,4 +1,4 @@
-# cmbpbflutter
+# CmbpbFlutter
 
 Flutter 招商一网通支付 SDK。
 
@@ -35,7 +35,7 @@ Flutter 招商一网通支付 SDK。
 * 在info.plist中增加LSApplicationQueriesSchemes白名单配置，值为cmbmobilebank。
 * 在URL Types中新增URL Schemes，值设置为招行分配给商户的scheme（需与安卓设置的scheme保持一致），如分配到的scheme为abcdefg则配置如下图所示。
 
-<image src="https://github.com/leon2017/cmbpb-flutter/screenshot/screenshot_1.png"/>
+<image src="https://github.com/leon2017/cmbpb-flutter/blob/master/screenshot/screenshot_1.png"/>
 
 ## 基本使用
 
@@ -67,11 +67,11 @@ void _startPay() {
 ## 捐助
 开源不易，请作者喝杯咖啡。
 
-<img src="https://github.com/leon2017/cmbpb-flutter/screenshot/wx.jpg" height="300">  <img src="https://github.com/leon2017/cmbpb-flutter/screenshot/alipay.jpg" height="300">
+<img src="https://github.com/leon2017/cmbpb-flutter/blob/master/screenshot/wx.jpg" height="300">  <img src="https://github.com/leon2017/cmbpb-flutter/blob/master/screenshot/alipay.jpg" height="300">
 
 ## LICENSE
 
-    Copyright 2018 OpenFlutter Project
+    Copyright 2018 Leon2017 CmbpbFlutter Project
 
     Licensed to the Apache Software Foundation (ASF) under one or more contributor
     license agreements.  See the NOTICE file distributed with this work for
