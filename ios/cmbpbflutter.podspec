@@ -20,6 +20,7 @@ A new Flutter project.
   s.preserve_paths = 'CMBSDK.framework'
   s.xcconfig = { 'OTHER_LDFLAGS' => '-framework CMBSDK' }
   s.vendored_frameworks = 'CMBSDK.framework'
+  s.public_header_files = 'CMBApi.h','CMBApiManager.h'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
