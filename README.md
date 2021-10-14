@@ -71,7 +71,7 @@ void _startPay() {
 
 ## LICENSE
 
-    Copyright 2018 Leon2017 CmbpbFlutter Project
+    Copyright 2021 Leon2017 CmbpbFlutter Project
 
     Licensed to the Apache Software Foundation (ASF) under one or more contributor
     license agreements.  See the NOTICE file distributed with this work for
