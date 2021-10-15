@@ -1,4 +1,4 @@
-import 'package:cmbpbflutter/cmnpb_pay_core.dart';
+import 'package:cmbpbflutter/cmbpbflutter.dart';
 
 ///支付结果回调
 class CmbPbPayResp {

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:cmbpbflutter/cmnpb_pay_core.dart';
+import 'package:cmbpbflutter/cmbpbflutter.dart';
 
 class CmbPbPay {
   CmbPbPay._();
