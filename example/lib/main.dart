@@ -1,6 +1,6 @@
+import 'package:cmbpbflutter/cmbpbflutter.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:cmbpbflutter/cmnpb_pay_core.dart';
 import 'package:flutter/services.dart';
 
 void main() {

@@ -1,4 +1,4 @@
-import 'package:cmbpbflutter/cmnpb_pay_core.dart';
+import 'package:cmbpbflutter/cmbpbflutter.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
