@@ -40,6 +40,18 @@ dependencies:
        </activity>
 ```
 
+#### 需要在Android工程的根目录下的`build.gradle`文件里的`allprojects`添加cmbpbflutter 依赖的aar libs
+```gradle
+allprojects {
+    repositories {
+        ...
+        flatDir {
+            dirs 'libs', project(':cmbpbflutter').file('libs')
+        }
+    }
+}
+```
+
 ### IOS 
 
 #### 配置Xcode中
