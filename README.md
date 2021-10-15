@@ -1,10 +1,21 @@
 # CmbpbFlutter
+![pub package](https://img.shields.io/badge/pub-v1.0.0-blue)
 
 Flutter 招商一网通支付 SDK。
 
 ## 相关文档
 * [招商一网通支付接入文档](http://openhome.cmbchina.com/PayNew/pay/doc/cell/app)
 * [Universal Links](https://developer.apple.com/documentation/uikit/inter-process_communication/allowing_apps_and_websites_to_link_to_your_content)
+
+## 添加依赖
+
+在`pubspec.yaml` 文件中添加`cmbpbflutter`依赖:
+![pub package](https://img.shields.io/badge/pub-v1.0.0-blue)
+
+```yaml
+dependencies:
+  cmbpbflutter: ^${latestVersion}
+```
 
 ## 相关配置
 
