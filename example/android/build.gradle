@@ -15,8 +15,12 @@ allprojects {
     repositories {
         google()
         jcenter()
+        flatDir {
+            dirs 'libs', project(':cmbpbflutter').file('libs')
+        }
     }
 }
+
 
 rootProject.buildDir = '../build'
 subprojects {
