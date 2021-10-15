@@ -1,7 +1,8 @@
 name: cmbpbflutter
-description: A new Flutter project.
-version: 0.0.1
-homepage:
+description: A new Flutter project on CMB payment SDK.
+version: 1.0.0
+author: Leon <lijiawangjun@gmail.com>
+homepage: https://github.com/leon2017/cmbpb-flutter
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
