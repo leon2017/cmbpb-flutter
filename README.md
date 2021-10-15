@@ -1,5 +1,5 @@
 # CmbpbFlutter
-![pub package](https://img.shields.io/badge/pub-v1.0.0-blue)
+![pub package](https://img.shields.io/badge/pub-v1.0.1-blue)
 
 Flutter 招商一网通支付 SDK。
 
@@ -10,7 +10,7 @@ Flutter 招商一网通支付 SDK。
 ## 添加依赖
 
 在`pubspec.yaml` 文件中添加`cmbpbflutter`依赖:
-![pub package](https://img.shields.io/badge/pub-v1.0.0-blue)
+![pub package](https://img.shields.io/badge/pub-v1.0.1-blue)
 
 ```yaml
 dependencies:
